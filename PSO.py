@@ -100,11 +100,14 @@ class PSO():
         - function: The objective function
     '''
     def __init__(self,num_particles,num_params, interval, function) -> None:
+        def first_guess_linear(n):
+            theta = [uniform(0, pi) for _ in range(0,int(n/2))] + [uniform(0, 2*pi) for _ in range(0,int(n/2))]
+            return (theta)
         self.swarm = Swarm()
         self.dimentions = num_params
         self.function = function
         for _ in range(num_particles):
-            current_pos = np.array([uniform(interval[0],interval[1]) for _ in range(0,num_params)])
+            current_pos = first_guess_linear(num_params)
             current_best = function(current_pos)
             self.swarm.add_particle(Particle(current_pos,current_best,np.array([random() for _ in range(0,num_params)])))
     '''

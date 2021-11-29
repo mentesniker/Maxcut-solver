@@ -135,14 +135,16 @@ class BA():
         - number_of_iterations (optional): The number of the iterations of the heuristic.
     '''
     def __init__(self, number_of_bats, num_dimentions, interval, alfa, gamma, number_of_iterations=50) -> None:
+        def first_guess_linear(n):
+            theta = [uniform(0, pi) for _ in range(0,int(n/2))] + [uniform(0, 2*pi) for _ in range(0,int(n/2))]
+            return (theta)
         self.number_of_iterations = number_of_iterations
         self.alfa = alfa
         self.gamma = gamma
         bats = list()
         for _ in range(0,number_of_bats):
-            ##todo check velocity and init position
             bats.append(Bat(frecuency_min=0, frecuency_max=100,
-             position=[uniform(interval[0], interval[1]) for _ in range(0,num_dimentions)], velocity=[uniform(interval[0], interval[1]) for _ in range(0,num_dimentions)]))
+             position=first_guess_linear(num_dimentions), velocity=[uniform(interval[0], interval[1]) for _ in range(0,num_dimentions)]))
         self.cloud_of_bats = Cloud(bats)
     
     '''

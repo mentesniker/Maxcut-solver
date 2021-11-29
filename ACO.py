@@ -216,6 +216,10 @@ class ACO():
         - num_iterations (optional): The number of iterations of the algorithm.
     '''
     def __init__(self, num_params, discrete_points, interval, number_ants, q, evaporation_rate, num_iterations = 50) -> None:
+        def first_guess_linear(n):
+            [Point(uniform(interval[0],interval[1]), 1/2) for _ in range(discrete_points)]
+            theta = [Point(uniform(0, pi),1/2) for _ in range(0,int(n/2))] + [Point(uniform(0, 2*pi),1/2) for _ in range(0,int(n/2))]
+            return (theta)
         self.number_params = num_params
         self.num_iterations = num_iterations
         self.discrete_points = discrete_points
@@ -224,7 +228,7 @@ class ACO():
         self.p = evaporation_rate
         self.ants = [Ant(num_params) for _ in range(0, number_ants)]
         for _ in range(0,self.number_params):
-            self.points.append(PointsList([Point(uniform(interval[0],interval[1]), 1/2) for _ in range(discrete_points)]))
+            self.points.append(PointsList(first_guess_linear(discrete_points)))
 
     '''
     Method that returns the best ant and it's cost 
@@ -294,7 +298,7 @@ class ACO():
         best_ant, best_cost = self.get_best_ant(fx)
         if(best_cost == 0):
             print("solution found")
-            return best_ant.get_location()
+            return [best_ant.get_location(),0]
         else:
             self.update_pheromone(best_ant, -1*best_cost)
         for i in range(self.num_iterations):
@@ -302,8 +306,8 @@ class ACO():
             self.local_search(fx)
             ant, cost = self.get_best_ant(fx)
             if(cost == 0):
-                print("solution found")
-                return ant.get_location()
+                print("iteration " + str(i))
+                return [ant.get_location(),i]
             else:
                 self.update_pheromone(ant, -1*cost)
                 if(i % 25 == 0):
@@ -311,4 +315,4 @@ class ACO():
             if(cost < best_cost):
                 best_ant = ant
                 best_cost = cost
-        return best_ant.get_location(),best_cost
+        return [best_ant.get_location(),self.num_iterations]
