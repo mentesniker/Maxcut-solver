@@ -238,10 +238,10 @@ class ACO():
         - float: the cost of the best ant.
     '''
     def get_best_ant(self, function):
-        cost = 0
         best_ant = self.ants[0]
+        cost = function(best_ant.get_location())
         for ant in self.ants:
-            ant_cost = -1 * (function(ant.get_location()))
+            ant_cost = (function(ant.get_location()))
             if(ant_cost < cost):
                 cost = ant_cost
                 best_ant = ant
@@ -253,7 +253,7 @@ class ACO():
     '''
     def local_search(self, function):
         for ant in self.ants:
-            res = minimize(function, ant.get_location(), method='COBYLA')
+            res = minimize(function, ant.get_location(), method='COBYLA', options={"maxiter":5})
             ant.update_location(res.x)
 
     '''
@@ -296,23 +296,17 @@ class ACO():
         self.probabilistic_construction()
         self.local_search(fx)
         best_ant, best_cost = self.get_best_ant(fx)
-        if(best_cost == 0):
-            print("solution found")
-            return [best_ant.get_location(),0]
-        else:
-            self.update_pheromone(best_ant, -1*best_cost)
+        best_location = best_ant.get_location()
+        self.update_pheromone(best_ant, best_cost)
         for i in range(self.num_iterations):
             self.probabilistic_construction()
             self.local_search(fx)
             ant, cost = self.get_best_ant(fx)
-            if(cost == 0):
-                print("iteration " + str(i))
-                return [ant.get_location(),i]
-            else:
-                self.update_pheromone(ant, -1*cost)
-                if(i % 25 == 0):
-                    print("iteration " + str(i) + " with cost of " + str(-1*cost))
+            self.update_pheromone(ant, cost)
+            if(i % 25 == 0):
+                print("iteration " + str(i) + " with cost of " + str(cost))
             if(cost < best_cost):
+                best_location = ant.get_location()
                 best_ant = ant
                 best_cost = cost
-        return [best_ant.get_location(),self.num_iterations]
+        return [best_location,self.num_iterations]

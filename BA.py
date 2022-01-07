@@ -167,9 +167,9 @@ class BA():
                 if(random_number > bat.current_pulse_interval):
                     bat.fly_randomly(average_loudness, best_position)
                 bat.fly_randomly(average_loudness, bat.position)
-                if(random_number < bat.loudness and function(bat.position) < best_cost):
-                    #todo accept solutions
+                if(function(bat.position) <  best_cost):
                     solution_position = best_position
+                if(random_number < bat.loudness and function(bat.position) < best_cost):
                     bat.update_loudness(self.alfa)
                     bat.update_pulse_interval(self.gamma, t)
         return solution_position
