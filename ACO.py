@@ -303,8 +303,6 @@ class ACO():
             self.local_search(fx)
             ant, cost = self.get_best_ant(fx)
             self.update_pheromone(ant, cost)
-            if(i % 25 == 0):
-                print("iteration " + str(i) + " with cost of " + str(cost))
             if(cost < best_cost):
                 best_location = ant.get_location()
                 best_ant = ant
